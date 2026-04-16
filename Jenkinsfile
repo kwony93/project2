@@ -56,7 +56,7 @@ pipeline {
             sh '''
             export KUBECONFIG=$KUBECONFIG_FILE
             kubectl set image deployment/user3-was \
-            was=$IMAGE_NAME \
+            user3-was=$IMAGE_NAME \
             -n user3-was
             kubectl rollout restart deployment user3-was -n user3-was
             '''
