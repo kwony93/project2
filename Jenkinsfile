@@ -15,8 +15,10 @@ pipeline {
 
     stage('Build') {
       steps {
-        sh 'mvn -v'
-        sh 'mvn clean package -DskipTests'
+	dir('spring-petclinic') {
+          sh 'mvn -v'
+          sh 'mvn clean package -DskipTests'
+        }
       }
     }
   }
