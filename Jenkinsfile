@@ -7,7 +7,7 @@ pipeline {
   }
 
   environment {
-    IMAGE_NAME = "hklee2748/spring-petclinic:latest"
+    IMAGE_NAME = "hklee2748/spring-petclinic:${BUILD_NUMBER}"
   }
 
   stages {
@@ -18,7 +18,7 @@ pipeline {
       }
     }
 
-    stage('STAGE.2 : Build') {
+    stage('STAGE.2 : Maven Build') {
       steps {
         dir('spring-petclinic') {
           sh 'mvn clean package -DskipTests'
@@ -49,13 +49,15 @@ pipeline {
       }
     }
 
-    stage('STAGE.5 : Deploy') {
+    stage('STAGE.5 : Deploy to Kubernetes') {
       steps {
         withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
           dir('was') {
             sh '''
             export KUBECONFIG=$KUBECONFIG_FILE
-            kubectl apply -f deploy-user3-was.yaml
+            kubectl set image deployment/user3-was \
+            was=$IMAGE_NAME \
+            -n user3-was
             kubectl rollout restart deployment user3-was -n user3-was
             '''
           }
