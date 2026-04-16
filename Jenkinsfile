@@ -14,7 +14,9 @@ pipeline {
 
     stage('STAGE.1 : Checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/kwony93/project2.git'
+        git branch: 'main',
+            url: 'https://github.com/kwony93/project2.git',
+            credentialsId: 'git-creds'
       }
     }
 
@@ -44,6 +46,7 @@ pipeline {
           sh '''
           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
           docker push $IMAGE_NAME
+          docker logout
           '''
         }
       }
