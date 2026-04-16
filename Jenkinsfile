@@ -39,6 +39,17 @@ pipeline {
 			}
 		}
 
+	  	stage('Test kubectl') {
+    		steps {
+        			withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
+            		sh '''
+            		export KUBECONFIG=$KUBECONFIG_FILE
+            		kubectl get pods -A
+            		'''
+        			}
+    		}
+		}
+
 	
 	}
 }
