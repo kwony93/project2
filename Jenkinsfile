@@ -6,7 +6,7 @@ pipeline {
     jdk 'JDK21'
   }
 
-  enviroment {
+  environment {
 	  IMAGE_NAME = "hklee2748/spring-petclinic:latest"
   }
 
