@@ -7,11 +7,11 @@ metadata:
     app: was
     owner: user3
 spec:
-   type: ClusterIP
+  type: ClusterIP
     selector:
       app: was
       owner: user3
     ports:
       - protocol: TCP
-        port: 80
-        targetPort: 8080
+      port: 80
+      targetPort: 8080
