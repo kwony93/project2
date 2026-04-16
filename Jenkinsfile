@@ -7,49 +7,60 @@ pipeline {
   }
 
   environment {
-	  IMAGE_NAME = "hklee2748/spring-petclinic:latest"
+    IMAGE_NAME = "hklee2748/spring-petclinic:latest"
   }
 
   stages {
-		stage('check Tools') {
-	      steps {
-	        dir('spring-petclinic') {
-					sh 'mvn -v'
-					sh 'docker version'
-					sh 'kubectl version --client' 
-				}
-		  }
-		}
 
-		stage('Load Credentials') {
-			steps {
-				withCredentials([
-					file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG'),
-					usernamePassword(
-						credentialsId: 'docker-creds', 
-						usernameVariable: 'DOCKER_USER',
-						passwordVariable: 'DOCKER_PASS'
-					)
-				]) {
-				sh '''
-				echo "KUBECONFIG loaded"
-				echo "DOCKER user: $DOCKER_USER"
-				'''
-				}
-			}
-		}
+    stage('STAGE.1 : Checkout') {
+      steps {
+        git branch: 'main', url: 'https://github.com/kwony93/project2.git'
+      }
+    }
 
-	  	stage('Test kubectl') {
-    		steps {
-        			withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
-            		sh '''
-            		export KUBECONFIG=$KUBECONFIG_FILE
-            		kubectl get pods -A
-            		'''
-        			}
-    		}
-		}
+    stage('STAGE.2 : Build') {
+      steps {
+        dir('spring-petclinic') {
+          sh 'mvn clean package -DskipTests'
+        }
+      }
+    }
 
-	
-	}
+    stage('STAGE.3 : Docker Build') {
+      steps {
+        dir('spring-petclinic') {
+          sh 'docker build -t $IMAGE_NAME .'
+        }
+      }
+    }
+
+    stage('STAGE.4 : Docker Push') {
+      steps {
+        withCredentials([usernamePassword(
+          credentialsId: 'docker-creds',
+          usernameVariable: 'DOCKER_USER',
+          passwordVariable: 'DOCKER_PASS'
+        )]) {
+          sh '''
+          echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+          docker push $IMAGE_NAME
+          '''
+        }
+      }
+    }
+
+    stage('STAGE.5 : Deploy') {
+      steps {
+        withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
+          dir('was') {
+            sh '''
+            export KUBECONFIG=$KUBECONFIG_FILE
+            kubectl apply -f .
+            '''
+          }
+        }
+      }
+    }
+
+  }
 }
