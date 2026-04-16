@@ -14,11 +14,27 @@ pipeline {
     stage('check Tools') {
       steps {
         dir('spring-petclinic') {
-			sh 'mvn -v'
-			sh 'docker version'
-			sh 'kubectl version --client' 
-		}
+				sh 'mvn -v'
+				sh 'docker version'
+				sh 'kubectl version --client' 
+				}
       }
-    }
-  }
+		}
+
+		stage('Load Credentials') {
+			steps {
+				withCredentials([
+					file(credentialsID: 'kubeconfig', varialbe: 'KUBECONFIG_FILE'),
+					usernamePassword(credentialsID: 'docker-creds', usernameVariable: 'DOCKER_USER')
+				]) {
+				sh '''
+				echo "KUBECONFIG loaded"
+				echo "DOCKER user: $DOCKER_USER"
+				'''
+				}
+			}
+		}
+
+	
+	}
 }
