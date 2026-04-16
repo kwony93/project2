@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: user3-was
-          image: hklee2748/spring-petclinic
+          image: hklee2748/spring-petclinic:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
