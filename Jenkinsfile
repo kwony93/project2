@@ -55,7 +55,7 @@ pipeline {
           dir('was') {
             sh '''
             export KUBECONFIG=$KUBECONFIG_FILE
-            kubectl apply -f .
+            kubectl apply -f deploy-user3-was.yaml
             kubectl rollout restart deployment user3-was -n user3-was
             '''
           }
