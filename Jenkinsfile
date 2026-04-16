@@ -11,14 +11,14 @@ pipeline {
   }
 
   stages {
-    stage('check Tools') {
-      steps {
-        dir('spring-petclinic') {
-				sh 'mvn -v'
-				sh 'docker version'
-				sh 'kubectl version --client' 
+		stage('check Tools') {
+	      steps {
+	        dir('spring-petclinic') {
+					sh 'mvn -v'
+					sh 'docker version'
+					sh 'kubectl version --client' 
 				}
-      }
+		  }
 		}
 
 		stage('Load Credentials') {
