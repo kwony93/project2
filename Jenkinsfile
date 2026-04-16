@@ -24,7 +24,7 @@ pipeline {
 		stage('Load Credentials') {
 			steps {
 				withCredentials([
-					file(credentialsID: 'kubeconfig', varialbe: 'KUBECONFIG_FILE'),
+					file(credentialsId: 'kubeconfig', varialbe: 'KUBECONFIG_FILE'),
 					usernamePassword(credentialsID: 'docker-creds', usernameVariable: 'DOCKER_USER')
 				]) {
 				sh '''
