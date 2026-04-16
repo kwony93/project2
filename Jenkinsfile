@@ -6,20 +6,17 @@ pipeline {
     jdk 'JDK21'
   }
 
-  stages {
-    stage('checkout 확인') {
-      steps {
-        echo 'Jenkinsfile from SCM loaded successfully'
-      }
-    }
-
-    stage('Build') {
-      steps {
-	dir('spring-petclinic') {
-          sh 'mvn -v'
-          sh 'mvn clean package -DskipTests'
-        }
-      }
-    }
+  enviroment {
+	  IMAGE_NAME = "hklee2748/spring-petclinic:latest"
   }
-}
+
+  stages {
+    stage('check Tools') {
+      steps {
+        dir('spring-petclinic') {
+			sh 'mvn -v'
+			sh 'docker version'
+			sh 'kubectl version --client' 
+		}
+      }
+    }
