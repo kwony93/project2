@@ -4,7 +4,7 @@ metadata:
   name: user3-was-ing
   namespace: user3-was
 spec:
-  ingressClassName: Nginx
+  ingressClassName: nginx
   rules:
     - host: was.user3.goping.com
       http:
